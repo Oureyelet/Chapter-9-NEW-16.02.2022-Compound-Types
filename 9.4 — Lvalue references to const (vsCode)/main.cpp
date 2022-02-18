@@ -118,7 +118,10 @@ int main()
 
 
     /*
-    In the above example, when ref is initialized with rvalue 5, a temporary object is created and ref is bound to that temporary object. The lifetime of the temporary object matches the lifetime of ref. Thus, we can safely print the value of ref in the next statement. Then both ref and the temporary object go out of scope and are destroyed at the end of the block.
+    In the above example, when ref is initialized with rvalue 5, a temporary object is created and ref is bound to that 
+    temporary object. The lifetime of the temporary object matches the lifetime of ref. Thus, we can safely print the value 
+    of ref in the next statement. Then both ref and the temporary object go out of scope and are destroyed at the end of the 
+    block.
 
     Key insight
 
