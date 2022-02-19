@@ -1,4 +1,10 @@
 #include <iostream>
+#include <string>
+
+void printNpis(std::string& y) // type changed to std::string&
+{
+    std::cout << y << '\n';
+} // y is destroyed here
 
 void printValue(int y)
 {
@@ -9,6 +15,21 @@ void printString(std::string y)
 {
     std::cout << y << '\n';
 }// y is destroyed here
+
+void addOne(int y) // y is a copy of x7
+{
+    ++y;
+}
+
+void addOne_by_ref(int& y) // y is bound to the actual object x8
+{
+    ++y;
+}
+
+void foo(int a, int& b, const std::string& c)
+{
+    //some code...
+}
 
 int main()
 {   
@@ -73,8 +94,285 @@ int main()
     std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
-    
+    One way to avoid making an expensive copy of an argument when calling a function is to use pass by reference instead of pass 
+    by value. When using pass by reference, we declare a function parameter as a reference type (or const reference type) rather 
+    than as a normal type. When the function is called, each reference parameter is bound to the appropriate argument. 
+    Because the reference acts as an alias for the argument, no copy of the argument is made.
+
+    Here’s the same example as above, using pass by reference instead of pass by value:
     */
+
+    std::string str{ "Hello, world!" };
+
+    printNpis(str);// x is now passed by reference into reference parameter y (inexpensive)
+
+    /*
+    This program is identical to the prior one, except the type of parameter y has been changed from std::string to std::string& 
+    (an lvalue reference). Now, when printValue(x) is called, lvalue reference parameter y is bound to argument x. Binding a 
+    reference is always inexpensive, and no copy of x needs to be made. Because a reference acts as an alias for the object 
+    being referenced, when printValue() uses reference y, it’s accessing the actual argument x (rather than a copy of x).
+
+    Key insight
+
+    Pass by reference allows us to pass arguments to a function without making copies of those arguments each time the function 
+    is called.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Pass by reference allows us to change the value of an argument" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    When an object is passed by value, the function parameter receives a copy of the argument. This means that any changes to the 
+    value of the parameter are made to the copy of the argument, not the argument itself:
+    */
+    int x7{ 7 };
+
+    std::cout << "Value of x7 =" << x7 << '\n';
+
+    addOne(x7);
+
+    std::cout << "Value of x7 =" << x7 << '\n'; // x7 has not been modified
+
+    /*
+    In the above program, because value parameter y is a copy of x7, when we increment y, this only affects y. 
+    This program outputs:
+
+    7
+    7
+
+    However, since a reference acts identically to the object being referenced, when using pass by reference, any changes 
+    made to the reference parameter will affect the argument:
+    */
+
+    int x8{ 8 };
+
+    std::cout << "Value of x8 =" << x8 << '\n';
+
+    addOne_by_ref(x8);
+
+    std::cout << "After passed by reference:";
+    std::cout << "Value of x8 =" << x8 << '\n'; // x8 has been modified
+
+    /*
+    This program outputs:
+
+    5
+    6
+
+    In the above example, x initially has value 5. When addOne(x) is called, reference parameter y is bound to argument x. 
+    When the addOne() function increments reference y, it’s actually incrementing argument x from 5 to 6 (not a copy of x). 
+    This changed value persists even after addOne() has finished executing.
+
+    Key insight
+
+    Passing values by reference to non-const allows us to write functions that modify the value of arguments passed in.
+
+    The ability for functions to modify the value of arguments passed in can be useful. Imagine you’ve written a function that 
+    determines whether a monster has successfully attacked the player. If so, the monster should do some amount of damage to 
+    the player’s health. If you pass your player object by reference, the function can directly modify the health of the actual 
+    player object that was passed in. If you pass the player object by value, you could only modify the health of a copy of the 
+    player object, which isn’t as useful.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Pass by reference to non-const can only accept modifiable lvalue arguments" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Because a reference to a non-const value can only bind to a modifiable lvalue (essentially a non-const variable), this means 
+    that pass by reference only works with arguments that are modifiable lvalues. In practical terms, this significantly limits 
+    the usefulness of pass by reference to non-const, as it means we can not pass const variables or literals. 
+    
+    see example here: https://www.learncpp.com/cpp-tutorial/pass-by-lvalue-reference/
+
+    Fortunately, there’s an easy way around this.
+    */
+    
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Pass by reference to non-const can only accept modifiable lvalue arguments" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Unlike a reference to non-const (which can only bind to modifiable lvalues), a reference to const can bind to modifiable 
+    lvalues, non-modifiable lvalues, and rvalues. Therefore, if we make our reference parameter const, then it will be able to 
+    bind to any type of argument:
+
+    #include <iostream>
+    #include <string>
+
+    void printValue(const int& y) // y is now a const reference
+    {
+        std::cout << y << '\n';
+    }
+
+    int main()
+    {
+        int x { 5 };
+        printValue(x); // ok: x is a modifiable lvalue
+
+        const int z { 5 };
+        printValue(z); // ok: z is a non-modifiable lvalue
+
+        printValue(5); // ok: 5 is a literal rvalue
+
+        return 0;
+    }
+
+    Passing by const reference offers the same primary benefit as pass by reference (avoiding making a copy of the argument), 
+    while also guaranteeing that the function can not change the value being referenced.
+
+    For example, the following is disallowed, because ref is const:
+
+    void addOne(const int& ref)
+    {
+        ++ref; // not allowed: ref is const
+    }
+
+    In most cases, we don’t want our functions modifying the value of arguments.
+
+    Best practice
+
+    Favor passing by const reference over passing by non-const reference unless you have a specific reason to do otherwise 
+    (e.g. the function needs to change the value of an argument).
+
+    Now we can understand the motivation for allowing const lvalue references to bind to rvalues: without that capability, 
+    there would be no way to pass literals (or other rvalues) to functions that used pass by reference!
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Mixing pass by value and pass by reference" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    A function with multiple parameters can determine whether each parameter is passed by value or passed by reference 
+    individually.
+
+    For example:
+    */
+    int x_Tree{ 5 };
+
+    const std::string s { "Hello, world!" };
+
+    foo(7, x_Tree, s);
+
+    //In the above example, the first argument is passed by value, the second by reference, and the third by const reference.
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "When to pass by reference" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    When to pass by reference
+
+    Because class types can be expensive to copy (sometimes significantly so), class types are usually passed by const reference 
+    instead of by value to avoid making an expensive copy of the argument. Fundamental types are cheap to copy, so they are 
+    typically passed by value.
+
+    Best practice
+
+    Pass fundamental types by value, and class (or struct) types by const reference.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "The cost of pass by value vs pass by reference (advanced)" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Not all class types need to be passed by reference. And you may be wondering why we don’t just pass everything by reference. 
+    In this section (which is optional reading), we discuss the cost of pass by value vs pass by reference, and refine our best 
+    practice as to when we should use each.
+
+    There are two key points that will help us understand when we should pass by value vs pass by reference:
+
+    First, the cost of copying an object is generally proportional to two things:
+
+        The size of the object. Object that use more memory take more time to copy.
+        Any additional setup costs. Some class types do additional setup when they are instantiated (e.g. such as opening a 
+        file or database, or allocating a certain amount of dynamic memory to hold an object of a variable size). These setup 
+        costs must be paid each time an object is copied.
+
+    On the other hand, binding a reference to an object is always fast (about the same speed as copying a fundamental type).
+
+    Second, accessing an object through a reference is slightly more expensive than accessing an object through a normal variable 
+    identifier. With a variable identifier, the compiler can just go to the memory address assigned to that variable and access 
+    the value. With a reference, there usually is an extra step: the compiler must first determine which object is being 
+    referenced, and only then can it go to that memory address for that object and access the value. The compiler can also 
+    sometimes optimize code using objects passed by value more highly than code using objects passed by reference. This means 
+    code generated for objects passed by reference is typically slower than the code generated for objects passed by value.
+
+    We can now answer the question of why we don’t pass everything by reference:
+
+        For objects that are cheap to copy, the cost of copying is similar to the cost of binding, so we favor pass by value so 
+        the code generated will be faster.
+        For objects that are expensive to copy, the cost of the copy dominates, so we favor pass by (const) reference to avoid 
+        making a copy.
+
+    Best practice
+
+    Prefer pass by value for objects that are cheap to copy, and pass by const reference for objects that are expensive to copy. 
+    If you’re not sure whether an object is cheap or expensive to copy, favor pass by const reference.
+
+    The last question then is, how do we define “cheap to copy”? There is no absolute answer here, as this varies by compiler, 
+    use case, and architecture. However, we can formulate a good rule of thumb: An object is cheap to copy if uses 2 or fewer 
+    “words” of memory (where a “word” is approximated by the size of a memory address) and it has no setup costs.
+
+    The following program defines a macro that can be used to determine if a type (or object) uses 2 or fewer memory addresses 
+    worth of memory:
+
+    #include <iostream>
+
+    // Evaluates to true if the type (or object) uses 2 or fewer memory addresses worth of memory
+    #define isSmall(T) (sizeof(T) <= 2 * sizeof(void*))
+
+    struct S
+    {
+        double a, b, c;
+    };
+
+    int main()
+    {
+        std::cout << std::boolalpha; // print true or false rather than 1 or 0
+        std::cout << isSmall(int) << '\n'; // true
+        std::cout << isSmall(double) << '\n'; // true
+        std::cout << isSmall(S) << '\n'; // false
+
+        return 0;
+    }
+
+    As an aside…
+
+    We use a preprocessor macro here so that we can substitute in a type (normal functions disallow this).
+
+    However, it can be hard to know whether a class type object has setup costs or not. It’s best to assume that most standard 
+    library classes have setup costs, unless you know otherwise that they don’t.
+
+    Tip
+
+    An object of type T is cheap to copy if sizeof(T) <= 2 * sizeof(void*) and has no additional setup costs.
+
+    Common types that are cheap to copy include all of the fundamental types, enumerated types, and std::string_view.
+    Common types that are expensive to copy include std::array, std::string, std::vector, and std::ostream.
+    */
+
 
     return 0;
 }
