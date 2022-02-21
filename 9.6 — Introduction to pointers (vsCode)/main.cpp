@@ -411,7 +411,130 @@ int main()
     std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
+    Much like a dangling reference, a dangling pointers is a pointer that is holding the address of an object that is no 
+    longer valid (e.g. because it has been destroyed). Dereferencing a dangling pointer will lead to undefined results.
+
+    Here’s an example of creating a dangling pointer:
+    */
+    int xOne{ 5 };
+    int* ptr_xOne{ &xOne };
+
+    std::cout<< *ptr_xOne << '\n'; // valid
+
+    {
+        int yOne{ 7 };
+        ptr_xOne = &yOne; 
+
+        std::cout << *ptr_xOne << '\n'; // valid
+    }// y goes out of scope, and ptr is now dangling
+
+    std::cout << *ptr_xOne << '\n'; // undefined behavior from dereferencing a dangling pointer
+
+    /*
+    The above program will probably print:
+
+    5
+    7
+    7
+
+    But it may not, as the object that ptr was pointing at went out of scope and was destroyed at the end of the inner block, 
+    leaving ptr dangling.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Conclusion" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Pointers are variables that hold a memory address. They can be dereferenced using the dereference operator (*) to retrieve 
+    the value at the address they are holding. Dereferencing a wild or dangling (or null) pointer will result in undefined 
+    behavior and will probably crash your application.
+
+    Pointers are both more flexible than references and more dangerous. We’ll continue to explore this in the upcoming lessons.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Quiz time" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Question #1
+
+    What values does this program print? Assume a short is 2 bytes, and a 32-bit machine.
+
+    #include <iostream>
+
+    int main()
+    {
+        short value{ 7 }; // &value = 0012FF60
+        short otherValue{ 3 }; // &otherValue = 0012FF54
+
+        short* ptr{ &value }; 
+
+        std::cout << &value << '\n'; // 0012FF60
+        std::cout << value << '\n'; // 7
+        std::cout << ptr << '\n'; // address of ptr
+        std::cout << *ptr << '\n'; //7
+        std::cout << '\n';
+
+        *ptr = 9;
+
+        std::cout << &value << '\n'; // 0012FF60
+        std::cout << value << '\n'; // 9
+        std::cout << ptr << '\n'; // address of ptr
+        std::cout << *ptr << '\n'; // 9
+        std::cout << '\n';
+
+        ptr = &otherValue;
+
+        std::cout << &otherValue << '\n'; // 0012FF54
+        std::cout << otherValue << '\n'; // 3
+        std::cout << ptr << '\n'; // address of ptr
+        std::cout << *ptr << '\n'; // 3
+        std::cout << '\n';
+
+        std::cout << sizeof(ptr) << '\n';  // 2  = wrong.
+        std::cout << sizeof(*ptr) << '\n'; // 2
+
+        return 0;
+    }    
+    */
+
+    /*
+    Question #2
+
+    What’s wrong with this snippet of code?
+
+    int value{ 45 };
+    int* ptr{ &value }; // declare a pointer and initialize with address of value
+    *ptr = &value; // assign address of value to ptr
     
+    answer:
+
+    The last line of the above snippet doesn’t compile.
+
+    Let’s examine this program in more detail.
+
+    The first line contains a standard variable definition, along with an initialization value. Nothing special here.
+
+    In the second line, we’re defining a new pointer named ptr, and initializing it with the address of value. Remember that in 
+    this context, the asterisk is part of the pointer declaration syntax, not a dereference. So this line is fine.
+
+    On line three, the asterisk represents a dereference, which is used to get the value that a pointer is pointing to. So this 
+    line says, “retrieve the value that ptr is pointing to (an integer), and overwrite it with the address of value (an address). 
+    That doesn’t make any sense -- you can’t assign an address to an integer!
+
+    The third line should be:
+
+    ptr = &value;
+
+    This correctly assigns the address of variable value to the pointer.
     */
 
     return 0;
