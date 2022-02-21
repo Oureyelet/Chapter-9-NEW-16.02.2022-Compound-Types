@@ -147,5 +147,122 @@ int main()
     // explicit test for equivalence
     std::cout << "nullPtr is: " << (nullPtr == nullptr ? "null\n" : "non-null\n");
 
+    /*
+    The above program prints:
+
+    ptr is non-null
+    nullPtr is null
+
+    In lesson 4.9 -- Boolean values, we noted that integral values will implicitly convert into Boolean values: an integral 
+    value of 0 converts to Boolean value false, and any other integral value converts to Boolean value true.
+
+    Similarly, pointers will also implicitly convert to Boolean values: a null pointer converts to Boolean value false, and a 
+    non-null pointer converts to Boolean value true. This allows us to skip explicitly testing for nullptr and just use the 
+    implicit conversion to Boolean to test whether a pointer is a null pointer. The following program is equivalent to the 
+    prior one:
+    */
+    int xTwo{ 5 };
+    int* ptr_xTwo{ &xTwo };
+
+    // pointers convert to Boolean false if they are null, and Boolean true if they are non-null
+    if(ptr_xTwo)// implicit conversion to Boolean
+        std::cout << "yuup ptr_xTwo is non-null.\n";
+    else
+        std::cout << "nope ! ptr_xTwo is null.\n";
+
+    int* ptr_x1{};
+    std::cout << (ptr_x1 ? "non-null\n" : "null\n");// implicit conversion to Boolean
+
+    /*
+    Warning
+
+    Conditionals can only be used to differentiate null pointers from non-null pointers. There is no convenient way to 
+    determine whether a non-null pointer is pointing to a valid object or dangling (pointing to an invalid object).
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Use nullptr to avoid dangling pointers" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Above, we mentioned that dereferencing a pointer that is either null or dangling will result in undefined behavior. 
+    Therefore, we need to ensure our code does not do either of these things.
+
+    We can easily avoid dereferencing a null pointer by using a conditional to ensure a pointer is non-null before trying to 
+    dereference it:
+    */
+    // Assume ptr is some pointer that may or may not be a null pointer
+    if(ptr_xTwo)// if ptr is not a null pointer 
+        std::cout << *ptr_xTwo << '\n';// okay to dereference
+    else
+    // do something else that doesn't involve dereferencing ptr (print an error message, do nothing at all, etc...)
+        std::cout << "Dereferencing nullptrs ERROR !\n";
+
+    /*
+    But what about dangling pointers? Because there is no way to detect whether a pointer is dangling, we need to avoid having 
+    any dangling pointers in our program in the first place. We do that by ensuring that any pointer that is not pointing at a 
+    valid object is set to nullptr.
+
+    That way, before dereferencing a pointer, we only need to test whether it is null -- if it is non-null, we assume the pointer 
+    is not dangling.
+
+    Best practice:
+
+    A pointer should either hold the address of a valid object, or be set to nullptr. That way we only need to test pointers for 
+    null, and can assume any non-null pointer is valid.
+
+    Unfortunately, avoiding dangling pointers isn’t always easy: when an object is destroyed, any pointers to that object will be 
+    left dangling. Such pointers are not nulled automatically! It is the programmer’s responsibility to ensure that all pointers 
+    to an object that has just been destroyed are properly set to nullptr.
+
+    Warning:
+
+    When an object is destroyed, any pointers to the destroyed object will be left dangling (they will not be automatically set 
+    to nullptr). It is your responsibility to detect these cases and ensure those pointers are subsequently set to nullptr.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Legacy null pointer literals: 0 and NULL" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    In older code, you may see two other literal values used instead of nullptr.
+
+    The first is the literal 0. In the context of a pointer, the literal 0 is specially defined to mean a null value, and is 
+    the only time you can assign an integral literal to a pointer.
+    */
+
+    double* someDoublePTR{ 0 };// someDoublePTR is now a null pointer (for example only, don't do this)
+
+    double someEmptyPTR;  // someEmptyPTR is uninitialized
+
+    someEmptyPTR = 0; // someEmptyPTR is now a null pointer (for example only, don't do this)
+    
+    /*
+    As an aside…
+
+    On modern architectures, the address 0 is typically used to represent a null pointer. However, this value is not 
+    guaranteed by the C++ standard, and some architectures use other values. The literal 0, when used in the context of a 
+    null pointer, will be translated into whatever address the architecture uses to represent a null pointer.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Favor references over pointers whenever possible" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    
+    */
+
+
     return 0;
 }
