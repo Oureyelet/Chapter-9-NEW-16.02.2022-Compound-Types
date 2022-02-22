@@ -260,9 +260,96 @@ int main()
     std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
-    
+    Pointers and references both give us the ability to access some other object indirectly.
+
+    Pointers have the additional abilities of being able to change what they are pointing at, and to be pointed at null. 
+    However, these pointer abilities are also inherently dangerous: A null pointer runs the risk of being dereferenced, and 
+    the ability to change what a pointer is pointing at can make creating dangling pointers easier:
     */
 
+    int* ptr_xTree{};
+
+        {
+            int xTree{ 5 };
+            ptr_xTree = &xTree; // set the pointer to an object that will be destroyed (not possible with a reference)
+        }// ptr is now dangling
+
+    /*
+    Since references can’t be pointed at null, we don’t have to worry about null dereferences. And because references must 
+    be bound to a valid object upon creation and then can not be reseated, dangling references are harder to create.
+
+    Because they are safer, references should be favored over pointers, unless the additional capabilities provided by pointers 
+    are required.
+
+    Best practice
+
+    Favor references over pointers unless the additional capabilities provided by pointers are needed.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Quiz time" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Question #1
+
+    1a) Can we determine whether a pointer is a null pointer or not? If so, how?
+
+    Show Solution
+
+    1b) Can we determine whether a non-null pointer is valid or dangling? If so, how?
+
+    Show Solution
+    */
+
+    /*
+    Question #2
+
+    For each subitem, answer “yes”, “no”, or “possibly” to whether the action described will result in undefined behavior 
+    (immediately). If the answer is “possibly”, clarify when.
+
+    2a) Assigning a new address to a pointer
+
+    Show Solution
+
+    2b) Assigning nullptr to a pointer
+
+    Show Solution
+
+    2c) Dereferencing a pointer to a valid object
+
+    Show Solution
+
+    2d) Dereferencing a dangling pointer
+
+    Show Solution
+
+    2e) Dereferencing a null pointer
+
+    Show Solution
+
+    2f) Dereferencing a non-null pointer
+
+    Show Solution
+    */
+
+    /*
+    Question #3
+
+    Why should we set pointers that aren’t pointing to a valid object to ‘nullptr’?
+
+    Show Solution:
+
+    We can not determine whether a non-null pointer is valid or dangling, and accessing a dangling pointer will result in 
+    undefined behavior. Therefore, we need to ensure that we do not have any dangling pointers in our program.
+
+    If we ensure all pointers are either pointing to valid objects or set to nullptr, then we can use a conditional to test 
+    for null to ensure we don’t dereference a null pointer, and assume all non-null pointers are pointing to valid objects.
+
+    */
 
     return 0;
 }
