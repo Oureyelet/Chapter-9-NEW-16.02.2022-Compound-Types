@@ -22,6 +22,11 @@ void nullify(int* ptr)
     ptr = nullptr;
 }
 
+void nulllift_reference(int*& ptr_ref)// refptr is now a reference to a pointer
+{
+    ptr_ref = nullptr;// Make the function parameter a null pointer
+}
+
 int main()
 {
     /*
@@ -107,8 +112,60 @@ int main()
     std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
-
+    Yup, it’s a thing. Just like we can pass a normal variable by reference, we can also pass pointers by reference. 
+    Here’s the same program as above with ptr2 changed to be a reference to an address:
     */
+
+    int y{ 2 };
+    int* ptr_y{ &y };// ptr points to y
+
+    std::cout << "ptr_y is:" << ( ptr_y ? "non-null\n" : "null\n" );
+
+    nulllift_reference( ptr_y );
+
+
+    std::cout << "ptr_y is:" << ( ptr_y ? "non-null\n" : "null\n" );
+
+    /*
+    This program prints:
+
+    ptr is non-null
+    ptr is null
+
+    Because refptr is now a reference to a pointer, when ptr is passed as an argument, refptr is bound to ptr. 
+    This means any changes to refptr are made to ptr.
+
+    As an aside…
+
+    Because references to pointers are fairly uncommon, it can be easy to mix up the syntax for a pointer to reference 
+    (is it int*& or int&*?). The good news is that if you do it backwards, the compiler will error because you can’t have a 
+    pointer to a reference (because pointers must hold the address of an object, and references aren’t objects). Then you can 
+    switch it around.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "There is only pass by value" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Now that you understand the basic differences between passing by reference, address, and value, let’s get reductionist for a 
+    moment. :)
+
+    If they can’t be optimized away entirely, references are normally implemented by the compiler using pointers. This means that 
+    behind the scenes, pass by reference is essentially just a pass by address (with access to the reference doing an implicit 
+    dereference).
+
+    And in the previous lesson, we mentioned that pass by address just copies an address from the caller to the 
+    called function -- which is just passing an address by value.
+
+    Therefore, we can conclude that C++ really passes everything by value! The properties of pass by address (and reference) 
+    come solely from the fact that we can dereference the passed address to change the argument, which we can not do with a 
+    normal value parameter!
+    */
+
 
 
     return 0;
