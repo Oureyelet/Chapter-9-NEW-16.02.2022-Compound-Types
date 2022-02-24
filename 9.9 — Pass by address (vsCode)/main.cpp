@@ -237,8 +237,30 @@ int main()
     std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
-    
+    Note that function print() in the example above doesn’t handle null values very well -- it effectively just aborts the 
+    function. Given this, why allow a user to pass in a null value at all? Pass by reference has the same benefits as pass 
+    by address without the risk of inadvertently dereferencing a null pointer.
+
+    Pass by const reference has a few other advantages over pass by address.
+
+    First, because an object being passed by address must have an address, only lvalues can be passed by address (as rvalues 
+    don’t have addresses). Pass by const reference is more flexible, as it can accept lvalues and rvalues:
     */
+    
+    //ERROR: printByAddress(&5); // error: can't take address of r-value
+
+    /*
+    Second, the syntax for pass by reference is natural, as we can just pass in literals or objects. With pass by address, 
+    our code ends up littered with ampersands (&) and asterisks (*).
+
+    In modern C++, most things that can be done with pass by address are better accomplished through other methods. Follow this 
+    common maxim: “Pass by reference when you can, pass by address when you must”.
+
+    Best practice
+
+    Prefer pass by reference to pass by address unless you have a specific reason to use pass by address.
+    */
+
 
     return 0;
 }
