@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <array>
 
 const std::string& getProgramName() // returns a const reference
 {
@@ -7,6 +8,15 @@ const std::string& getProgramName() // returns a const reference
 
     return s_programName;
 }
+
+/*
+const std::string& getProgramName_2() // returns a const reference
+{
+    const std::string s_programName { "Calculator" };
+
+    return s_programName;
+}
+*/
 
 const int& getNextId()
 {
@@ -16,6 +26,22 @@ const int& getNextId()
     return s_x; // and return a reference to it
 }
  
+std::string countSheep(int number) 
+{
+    int i{ 0 };
+
+    if(number == 0)
+    {
+        return "";
+    }
+    else
+    {
+        std::cout << i << " Sheep...";    
+    }
+
+    return countSheep(number - number); 
+}
+
 int main()
 {
     /*
@@ -39,6 +65,7 @@ int main()
     Here is an academic program to demonstrate the mechanics of return by reference:
     */
 
+    
 
     std::cout << std::endl;
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,5 +181,65 @@ int main()
     */
 
 
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Assigning/initializing a normal variable with a returned reference makes a copy" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    If a function returns a reference, and that reference is used to initialize or assign to a non-reference variable, the 
+    return value will be copied (as if it had been returned by value).
+    */
+
+    const int id3{ getNextId() };// id3 is a normal variable now and receives a copy of the value 
+    //returned by reference from getNextId()
+
+    const int id4{ getNextId() };// id4 is a normal variable now and receives a copy of the value returned by 
+    //reference from getNextId()
+
+    std::cout << id3 << ' ' << id4 << '\n';
+
+    /*
+    In the above example, getNextId() is returning a reference, but id1 and id2 are non-reference variables. In such a case, 
+    the value of the returned reference is copied into the normal variable. Thus, this program prints:
+
+    12
+
+    Of course, this also defeats the purpose of returning a value by reference.
+
+    Also note that if a program returns a dangling reference, the reference is left dangling before the copy is made, which 
+    will lead to undefined behavior:
+    */
+
+    // std::string name_2{ getProgramName_2() }; // makes a copy of a dangling reference
+
+    // std::cout << "This program is named " << name_2 << '\n'; // undefined behavior
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "It’s okay to return reference parameters by reference" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    
+    */
+    std::string firstH{ "Ania" };
+    std::cout << firstH[1] << '\n';
+
+    std::array<std::string, 3> codewars{ "Ania", "Tobia", "Krala" };
+    std::cout << codewars[2][3] << '\n';
+
+    int x{};
+    int y{};
+
+    std::cout << "Enter Twi integers: ";
+    //std::cin >> x >> y;
+    
+
+    std::cout << add(x, y) << '\n';
+
+    countSheep(33);
     return 0;
 }
