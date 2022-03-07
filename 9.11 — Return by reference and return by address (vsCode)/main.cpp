@@ -2,6 +2,9 @@
 #include <string>
 #include <array>
 
+//functions prototype:
+int& max( int& x, int& y );
+
 const std::string& getProgramName() // returns a const reference
 {
     static const std::string s_programName { "Calculator" };// has static duration, destroyed at end of program
@@ -25,21 +28,11 @@ const int& getNextId()
 
     return s_x; // and return a reference to it
 }
- 
-std::string countSheep(int number) 
+
+// Takes two std::string objects, returns the one that comes first alphabetically
+const std::string& firstAlphabetical(const std::string& a, const std::string& b)
 {
-    int i{ 0 };
-
-    if(number == 0)
-    {
-        return "";
-    }
-    else
-    {
-        std::cout << i << " Sheep...";    
-    }
-
-    return countSheep(number - number); 
+    return (a < b) ? a : b;// We can use operator< on std::string to determine which comes first alphabetically
 }
 
 int main()
@@ -223,23 +216,102 @@ int main()
     std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
-    
+    There are quite a few cases where returning objects by reference makes sense, and we’ll encounter many of those in future 
+    lessons. However, there is one useful example that we can show now.
+
+    If a parameter is passed into a function by reference, it’s safe to return that parameter by reference. This makes sense: 
+    in order to pass an argument to a function, the argument must exist in the scope of the caller. When the called function 
+    returns, that object must still exist in the scope of the caller.
+
+    Here is a simple example of such a function:
     */
-    std::string firstH{ "Ania" };
-    std::cout << firstH[1] << '\n';
-
-    std::array<std::string, 3> codewars{ "Ania", "Tobia", "Krala" };
-    std::cout << codewars[2][3] << '\n';
-
-    int x{};
-    int y{};
-
-    std::cout << "Enter Twi integers: ";
-    //std::cin >> x >> y;
     
+    std::string hello{ "Hello" };
+    std::string world{ "World" };
 
-    std::cout << add(x, y) << '\n';
+    std::cout << firstAlphabetical( hello, world ) << '\n';
 
-    countSheep(33);
+    /*
+    This prints:
+
+    Hello
+
+    In the above function, the caller passes in two std::string objects by const reference, and whichever of these strings 
+    comes first alphabetically is passed back by const reference. If we had used pass by value and return by value, 
+    we would have made up to 3 copies of std::string (one for each parameter, one for the return value). By using pass 
+    by reference/return by reference, we can avoid those copies.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "The caller can modify values through the reference" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    When a parameter is passed to a function by non-const reference, the function can use the reference to modify the value 
+    of the argument.
+
+    Similarly, when a non-const reference is returned from a function, the caller can use the reference to modify the value 
+    being returned.
+
+    Here’s an illustrative example:
+    */
+
+    int x7{ 5 };
+    int y7{ 6 };
+
+    max(x7, y7) = 7;// sets the greater of x or y to 7
+
+    std::cout << x7 << ' ' << y7 << '\n';
+
+    /*
+    In the above program, max() returns by reference whichever parameter has a larger value (in this case, y). 
+    The caller (main()) then uses this reference to modify the value of that object to 7.
+
+    This prints:
+
+    57
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Return by address" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Return by address works almost identically to return by reference, except a pointer to an object is returned instead of a 
+    reference to an object. Return by address has the same primary caveat as return by reference -- the object being returned 
+    by address must outlive the scope of the function returning the address, otherwise the caller will receive a dangling pointer.
+
+    The major advantage of return by address over return by reference is that we can have the function return nullptr if there 
+    is no valid object to return. For example, let’s say we have a list of students that we want to search. If we find the student 
+    we are looking for in the list, we can return a pointer to the object representing the matching student. If we don’t find any 
+    students matching, we can return nullptr to indicate a matching student object was not found.
+
+    The major disadvantage of return by address is that the caller has to remember to do a nullptr check before dereferencing the 
+    return value, otherwise a null pointer dereference may occur and undefined behavior will result. Because of this danger, 
+    return by reference should be preferred over return by address unless the ability to return “no object” is needed.
+
+    Best practice
+
+    Prefer return by reference over return by address unless the ability to return “no object” (using nullptr) is important.
+    */
+
+
+
+
     return 0;
+
+
+
+}
+
+// takes two integers by non-const reference, and returns the greater by reference
+int& max( int& x, int& y )
+{
+    return ( x > y ) ? x : y;
 }
