@@ -1,17 +1,21 @@
 #include <iostream>
+#include "Fraction2.h"// include our Fraction definition in this code file
 
 /*
 Define a program-defined type named Fraction so the compiler understands what a Fraction is
 (we'll explain what a struct is and how to use them later in this chapter)
 This only defines what a Fraction type looks like, it doesn't create one
 */
+
 struct Fraction
 {
     int numerator{};
     int denominator{};
 };
 
+
 // Now we can make use of our Fraction type
+// Now we can make use of our Fraction2 type (from Fraction2.h)
 int main()
 {
     /*
@@ -88,7 +92,7 @@ int main()
     Although we haven’t covered what a struct is yet, here’s an example showing the definition of custom Fraction type and an 
     instantiation of an object using that type:
     */
-    Fraction f{ 3, 4 };// this actually instantiates a Fraction object named f
+    Fraction f; // this actually instantiates a Fraction object named f
 
     /*
     In this example, we’re using the struct keyword to define a new program-defined type named Fraction (in the global scope, 
@@ -130,7 +134,7 @@ int main()
     type name and variable name:
     */
 
-    Fraction fraction{}; // Instantiates a variable named fraction of type Fraction
+    //Fraction fraction{}; // Instantiates a variable named fraction of type Fraction
 
     /*
     But this is no different than any other variable definition: the type (Fraction) comes first 
@@ -146,9 +150,66 @@ int main()
     std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
-    
+    To propagate type definitions into the code files that need them, program-defined types are typically defined in header 
+    files, and then #included into any code file that requires that type definition. These header files are typically given 
+    the same name as the program-defined type (e.g. a program-defined type named Fraction would be defined in Fraction.h)
+
+    Best practice
+
+    A program-defined type used in only one code file should be defined in that code file as close to the first point of use as 
+    possible.
+
+    A program-defined type used in multiple code files should be defined in a header file with the same name as the 
+    program-defined type and then #included into each code file as needed.
+
+    Here’s an example of what our Fraction type would look like if we moved it to a header file (named Fraction.h) so that it 
+    could be included into multiple code files:
+
+    Fraction.h:
+    */
+    Fraction2 fr2 {2, 4};// this actually creates a Fraction object named fr2
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Using program-defined types throughout a multi-file program" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    In lesson 2.6 -- Forward declarations and definitions, we discussed how the one-definition rule required us to define 
+    functions (and variables) in code files (not headers), and propagate only the forward declarations via header files.
+
+    If type definitions were subject to the same limitations, we would only be able to propagate forward declarations for 
+    types, not the full type definitions. This isn’t sufficient for us to be able to use those type definitions (since the 
+    compiler needs to see the full type definition).
+
+    Consequently, types have been exempted from the one-definition rule, so that full type definitions can be propagated to 
+    multiple files, even if that results in a duplicate definition.
+
+    All type definitions for a given type must be identical, otherwise undefined behavior will result.
     */
 
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Using program-defined types throughout a multi-file program" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    The term user-defined type sometimes comes up in casual conversation, as well as being mentioned (but not defined) in the 
+    C++ language standard. In casual conversation, the term tends to mean “a type that you defined yourself” (such as the Fraction 
+    type example above). Sometimes this also includes type aliases.
+
+    However, as used in the C++ language standard, a user-defined type is intended to be any type not defined as part of the core 
+    C++ language. This means that types defined in the C++ standard library (such as std::string) are technically considered to be 
+    user-defined types.
+
+    Because of mismatch in casual vs technical meaning, we’ll prefer the term program-defined type when talking about types that 
+    are defined by a programmer for use in their own programs.
+    */
+   
 
 
     return 0;
