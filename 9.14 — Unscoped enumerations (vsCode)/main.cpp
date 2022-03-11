@@ -11,6 +11,108 @@ enum Color
     black,// trailing comma optional but recommended
 };// the enum definition must end with a semicolon
 
+enum DaysOfWeek
+{
+    sunday,
+    monday,
+    tuesday,
+    wednesday,
+    thursday,
+    friday,
+    saturday,
+};
+
+enum CardinalDirections
+{
+    north,
+    east,
+    south,
+    west,
+};
+
+enum CardSuits
+{
+    clubs,
+    diamonds,
+    hearts,
+    spades,
+};
+
+int readFileContents(int (*openFile)(), int (*readFile)(), int (*parseFile)()) 
+{
+    if(!openFile())
+        return -1;
+    if(!readFile())
+        return -2;
+    if(!parseFile())
+        return -3;
+
+    return 0; //success
+}
+
+enum FileReadResult
+{
+    readResultSuccess,
+    readResultErrorFileOpen,
+    readResultErrorFileRead,
+    readResultErrorFileParse,
+};
+
+FileReadResult readFileContents(int openFile, int readFile, int parseFile)
+{
+    if(!openFile)
+        return readResultErrorFileOpen;
+    if(!readFile)
+        return readResultErrorFileRead;
+    if(!parseFile)
+        return readResultErrorFileParse;
+    
+    return readResultSuccess; //success   
+}
+
+enum ItemType
+{
+    sword,
+    torch,
+    potion,
+};
+
+enum SortOrder
+{
+    alphabetical,
+    alphabeticalReverse,
+    numerical,
+};
+
+void sortData(SortOrder order)
+{
+    if( order == numerical )
+    {
+        // sort data in forwards alphabetical order
+    }
+    else if( order == alphabeticalReverse )
+    {
+        // sort data in backwards alphabetical order
+    }
+    else if( order == alphabetical )
+    {
+        // sort data numerically
+    }
+}
+
+enum Color3
+{
+    color3_yellow,
+    color3_red,
+    color3_blue,
+};
+
+enum Feeling
+{
+    feeling_happy,
+    feeling_tired,
+    feeling_blue,// no longer has a naming collision with color_blue
+};
 
 int main()
 {
@@ -215,8 +317,152 @@ int main()
     std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
+    Because enumerators are descriptive, they are useful for enhancing code documentation and readability. 
+    Enumerated types are best used when you have a smallish set of related constants, and objects only need to hold one of 
+    those values at a time.
+
+    Commonly defined enumerations include days of the week, the cardinal directions, and the suits in a deck of cards:
     
+    Go see our new enums above main():
+
+    DaysOfWeek
+    CardinalDirections
+    CardSuits
+
+    Sometimes functions will return a status code to the caller to indicate whether the function executed successfully or 
+    encountered an error. Traditionally, small negative numbers were used to represent different possible error codes. 
+    For example:
+    
+    Go see our 'readFileContents' function above main()
+
+    However, using magic numbers like this isn’t very descriptive. A better method would be to use an enumerated type:
+
+    See our enum 'FileReadResult' and 'readFileContents' function above main()
+
+    Then the caller can test the function’s return value against the appropriate enumerator, which is easier to 
+    understand than testing the return result for a specific integer value.
     */
+
+    /*
+    if(readFileContents() == readResultSuccess)
+    {
+        // do something
+    }
+    else
+    {
+        // print error message
+    }
+    */
+
+    /*
+    Enumerated types can also be put to good use in games, to identify different types of items, or monsters, or terrain types. 
+    Basically, anything that is a small set of related objects.
+
+    For example:
+    */
+
+    ItemType holding{ torch };
+
+    /*
+    Enumerated types can also make for useful function parameters when the user needs to make a choice between two or 
+    more options:
+    */
+
+    //see our enum SortOrder
+
+    // see our function sortData
+
+    /*
+    Many languages use enumerations to define Booleans -- after all, a Boolean is essentially just an enumeration with 2 
+    enumerators: false and true! However, in C++, true and false are defined as keywords instead of enumerators.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "The scope of unscoped enumerations" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Unscoped enumerations are named such because they put their enumerator names into the same scope as the enumeration 
+    definition itself (as opposed to creating a new scope region like a namespace does).
+
+    For example, given this program:
+    */
+
+    // see our enum Color (blue is put into the global namespace)
+
+    Color banana{ yellow };// my banana is yellow
+
+    /*
+    The Color enumeration is defined in the global scope. Therefore, all the enumeration names (red, green, and blue) 
+    also go into the global scope. This pollutes the global scope and significantly raises the chance of naming collisions.
+
+    One consequence of this is that an enumerator name can’t be used in multiple enumerations within the same scope:
+    
+    enum Color
+    {
+        red,
+        green,
+        blue, // blue is put into the global namespace
+    };
+
+    enum Feeling
+    {
+        happy,
+        tired,
+        blue, // error: naming collision with the above blue
+    };
+
+    int main()
+    {
+        Color apple { red }; // my apple is red
+        Feeling me { happy }; // I'm happy right now (even though my program doesn't compile)
+
+        return 0;
+    }
+    */
+
+    /*
+    In the above example, both unscoped enumerations (Color and Feeling) put enumerators with the same name blue into the global 
+    scope. This leads to a naming collision and subsequent compile error.
+
+    Unscoped enumerations also provide a named scope region for their enumerators (much like a namespace acts as a named scope 
+    region for the names declared within). This means we can access the enumerators of an unscoped enumeration as follows:
+    */
+
+    Color waterMelon{ yellow };// okay, accessing enumerator from global namespace
+    Color cucumber{ Color::yellow };// also okay, accessing enumerator from scope of Color
+    Color son{ yellow }; // ang again okay !
+
+    /*
+    Most often, unscoped enumerators are accessed without using the scope resolution operator.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Avoiding enumerator naming collisions" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    There are quite a few common ways to prevent unscoped enumerator naming collisions. One option is to prefix each 
+    enumerator with the name of the enumeration itself:
+    */
+
+    //see our enum Color3 and Feeling please
+
+    Color3 paint{ color3_blue };
+    Feeling me{ feeling_blue };
+
+    /*
+    This still pollutes the namespace but reduces the chance for naming collisions by making the names longer and more unique.
+
+    A better option is to put the enumerated type inside something that provides a separate scope region, such as a namespace:
+    */
+
 
     return 0;
 }
