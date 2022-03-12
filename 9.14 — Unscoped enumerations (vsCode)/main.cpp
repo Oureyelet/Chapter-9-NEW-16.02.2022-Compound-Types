@@ -1,5 +1,27 @@
 #include <iostream>
 
+namespace colors
+{
+    // The names Color, white, pink, and black are defined inside namespace color
+    enum Color
+    {
+        white,
+        pink,
+        black,
+    };
+}
+
+namespace places
+{
+    enum Wakefield
+    {
+        hempworth,
+        trinity_walk,
+        pugnis,
+        pink, // feeling::pink doesn't collide with color::pink
+    };
+}
+
 // Define a new unscoped enumeration named Color
 enum Color
 {
@@ -113,6 +135,18 @@ enum Feeling
     feeling_tired,
     feeling_blue,// no longer has a naming collision with color_blue
 };
+
+namespace quiztime
+{
+    enum MonsterType
+    {
+        type_orc,
+        type_goblin,
+        type_troll,
+        type_ogre,
+        type_skeleton,
+    };
+}
 
 int main()
 {
@@ -463,6 +497,77 @@ int main()
     A better option is to put the enumerated type inside something that provides a separate scope region, such as a namespace:
     */
 
+    //check our two new namespace above main()
+
+    colors::Color wall{ colors::white };
+    places::Wakefield city{ places::hempworth };
+
+    /*
+    This means we now have to prefix our enumeration and enumerator names with the name of the scoped region.
+
+    For advanced readers
+
+    Classes also provide a scope region, and it’s common to put enumerated types related to a class inside the scope region of 
+    the class. We discuss this in lesson 12.17 -- Nested types in classes.
+
+    A related option is to use a scoped enumeration (which defines its own scope region). We’ll discuss scoped enumerations 
+    shortly (9.16 -- Scoped enumerations (enum classes)).
+
+    Best practice
+
+    Prefer putting your enumerations inside a named scope region (such as a namespace or class) so the enumerators don’t pollute 
+    the global namespace.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Comparing against enumerators" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    We can use the equality operators (operator== and operator!=) to test whether an enumeration has the value of a particular 
+    enumerator or not.
+    */
+
+    Color pants{ black };
+
+    if( pants == black )// if pants are black
+        std::cout << "Pants are black\n";
+    else
+        std::cout << "Pants are not black\n";
+    
+    /*
+    In the above example, we use an if-statement to test whether shirt is equal to the enumerator blue. This gives us a way 
+    to conditionalize our program’s behavior based on what enumerator our enumeration is holding.
+
+    We’ll make more use of this in the next lesson.
+    */
+
+
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Quiz time" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Question #1
+
+    Define an enumerated type named MonsterType to choose between the following monster races: orcs, goblins, trolls, ogres, 
+    and skeletons.
+    */
+
+    quiztime::MonsterType ogre{ quiztime::type_ogre };
+
+    /*
+    Question #2
+
+    Put the MonsterType enumeration inside a namespace. Then, create a main() function and instantiate a troll. 
+    The program should compile.
+    */
+    quiztime::MonsterType troll{ quiztime::type_troll };
 
     return 0;
 }
