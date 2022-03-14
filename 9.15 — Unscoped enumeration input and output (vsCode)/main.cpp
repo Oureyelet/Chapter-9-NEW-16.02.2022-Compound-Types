@@ -93,6 +93,18 @@ enum Pet
     pet_whale,// assigned 3
 };
 
+std::ostream& operator<<(std::ostream& out, Pet pet)
+{
+    switch (pet)
+    {
+    case pet_cat: return out << "cat"; break;
+    case pet_dog: return out << "dog"; break;
+    case pet_pig: return out << "pig"; break;
+    case pet_whale: return out << "whale"; break;
+    default: return out << "something went wrong"; break;
+    }
+}
+
 namespace specified_a_base
 {
     enum Pet: int
@@ -362,10 +374,54 @@ int main()
     std::cout << "Unscoped enumerator input" << '\n';
     std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /*
     
+    std::cout << "Enter a pet (0=cat, 1=dog, 2=pig, 3=whale): ";
+
+    int input{};
+    std::cin >> input; // input an integer
+
+    Pet homePet{ static_cast<Pet>(input) }; // static_cast our integer to a pet
+
+    std::cout << homePet << '\n'; // i added overloading function for print string: cat, dog, pig or whale :)
+
+    
+    std::cout << std::endl;
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    std::cout << "Quiz Time" << '\n';
+    std::cout << "//////////////////////////////////////////////////////////////////////////////////////////" << '\n';
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /*
+    Question #1
+
+    True or false. Enumerators can be:
+
+        Given an integer value
+
+    Show Solution
+
+        Not assigned a value
+
+    Show Solution
+
+        Given a floating point value
+
+    Show Solution
+
+        Given a negative value
+
+    Show Solution
+
+        Given a non-unique value
+
+    Show Solution
+
+        Initialized with the value of prior enumerators (e.g. magenta = red)
+
+    Show Solution
     */
 
+    
 
     return 0;
 }
