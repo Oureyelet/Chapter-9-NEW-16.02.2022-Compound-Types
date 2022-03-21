@@ -82,8 +82,8 @@ struct Foo
 
 struct Advertisement
 {
-    double howManyADS{};
-    double percentage{};
+    int howManyADS{};
+    int percentage{};
     double earned{};
 };
 
@@ -109,7 +109,63 @@ void printAdsInfo(const Advertisement& ads)
     std::cout << "Percentage of ads were clicked on by users " << ads.percentage << "%." << '\n';
     std::cout << "You earned from each ad: " << ads.earned << "$." << '\n';
 
-    std::cout << "Today you earned: " << ads.earned * ads.howManyADS * ads.percentage << "$\n";
+    std::cout << "Today you earned: " << (ads.earned * ads.howManyADS / 100 * ads.percentage) << "$\n";
+}
+
+struct Fraction_Q2
+{
+    int numerator{ 0 };
+    int denominator{ 1 };
+};
+
+void read_fraction_from_user()
+{
+    Fraction_Q2 fraction;
+    Fraction_Q2 fraction2;
+
+
+    std::cout << "Enter a value for the numerator: ";
+    std::cin >> fraction.numerator;
+
+    std::cout << "Enter a value for the denominator: ";
+    std::cin >> fraction.denominator;
+
+    std::cout << "Enter a value for the numerator: ";
+    std::cin >> fraction2.numerator;
+
+    std::cout << "Enter a value for the denominator: ";
+    std::cin >> fraction2.denominator;
+
+    std::cout << "Your fractions multiplied together: " << (fraction.numerator * fraction2.numerator) << '/'
+              << (fraction.denominator * fraction2.denominator) << '\n';
+}
+
+struct Fraction_Q2_answer
+{
+    int numerator{ 0 };
+    int denominator{ 1 };
+};
+
+Fraction_Q2_answer getFraction()
+{
+    Fraction_Q2_answer fr;
+    std::cout << "Enter a value for the numerator: ";
+    std::cin >> fr.numerator;
+
+    std::cout << "Enter a value for the denominator: ";
+    std::cin >> fr.denominator;
+
+    return fr;
+}
+
+Fraction_Q2_answer multiply(const Fraction_Q2_answer& fr1, const Fraction_Q2_answer& fr2)
+{
+    return { (fr1.numerator * fr2.numerator) , (fr1.denominator * fr2.denominator) };
+}
+
+void printFraction(const Fraction_Q2_answer& fr)
+{
+    std::cout << fr.numerator << '/' << fr.denominator << '\n';
 }
 
 
@@ -183,6 +239,42 @@ int main()
     you made for that day (multiply all 3 fields together).
     */
     printAdsInfo( readUserInfo() );
+
+
+    /*
+    Question #2
+
+    Create a struct to hold a fraction. The struct should have an integer numerator and an integer denominator member.
+
+    Write a function to read in a Fraction from the user, and use it to read-in two fraction objects. Write another function 
+    to multiply two Fractions together and return the result as a Fraction (you don’t need to reduce the fraction). 
+    Write another function that prints a fraction.
+
+    Your program’s output should match the following:
+
+    Enter a value for the numerator: 1
+    Enter a value for the denominator: 2
+
+    Enter a value for the numerator: 3
+    Enter a value for the denominator: 4
+
+    Your fractions multiplied together: 3/8
+
+    When multiplying two fractions together, the resulting numerator is the product of the two numerators, and the resulting 
+    denominator is the product of the two denominators.
+    */
+    read_fraction_from_user(); // my answer
+
+    //here is orginal answer
+    Fraction_Q2_answer fr1{ getFraction() };
+    Fraction_Q2_answer fr2{ getFraction() };
+
+    std::cout << "Your fractions multiplied together: ";
+
+    printFraction( multiply(fr1, fr2) );
+
+    std::cout << std::endl;
+
 
 
     return 0;
